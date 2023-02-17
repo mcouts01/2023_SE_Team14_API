@@ -1,3 +1,6 @@
 spring:
   datasource:
-    # Database config goes here
+    url: jdbc:postgresql://db.fkoolwuwgdldrmpifckc.supabase.co:5432/postgres
+    username: postgres
+    password: ${db-password}
+    driver-class-name: org.postgresql.Driver
