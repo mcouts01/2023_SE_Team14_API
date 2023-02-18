@@ -1,4 +1,4 @@
-package com.team14.api;
+package com.team14.api.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlayerDTO {
     private Integer playerID;
-    private String firstName;
-    private String lastName;
     private String codeName;
 }

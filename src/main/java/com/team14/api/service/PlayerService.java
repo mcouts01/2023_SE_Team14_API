@@ -1,11 +1,12 @@
-package com.team14.api;
+package com.team14.api.service;
+import com.team14.api.dto.PlayerDTO;
+import com.team14.api.entity.Player;
+import com.team14.api.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -14,16 +15,15 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    public Player savePlayer(PlayerDTO playerRequest) {
-        //log.info("Saving User with name " + player.getFirstName());
-        if (this.playerRepository.findByPlayerID(playerRequest.getPlayerID()).isEmpty()) {
+    public void savePlayer(PlayerDTO playerRequest) {
+        log.info("Saving player with code name " + playerRequest.getCodeName());
+        if (this.playerRepository.findByCodeName(playerRequest.getCodeName()).isEmpty()) {
             Player player = Player.builder()
-                    .playerID(playerRequest.getPlayerID())
-                    .firstName(playerRequest.getFirstName())
-                    .lastName(playerRequest.getLastName())
+                    .firstName("") // Professor mentioned that we don't need to worry about first and last name
+                    .lastName("")
                     .codeName(playerRequest.getCodeName())
                     .build();
-            return playerRepository.save(player);
+            playerRepository.save(player);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
         }

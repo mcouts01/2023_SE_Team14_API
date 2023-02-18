@@ -1,4 +1,4 @@
-package com.team14.api;
+package com.team14.api.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,16 +10,16 @@ import org.springframework.boot.SpringApplication;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-@Table(name = "player", schema = "playerData")
+@Table(name = "player", schema = "public")
 public class Player {
     @Id
-    private Integer playerID;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String codeName;
-
 }
