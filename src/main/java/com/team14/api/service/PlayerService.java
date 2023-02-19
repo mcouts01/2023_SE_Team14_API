@@ -15,7 +15,7 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    public void savePlayer(PlayerDTO playerRequest) {
+    public Player savePlayer(PlayerDTO playerRequest) {
         log.info("Saving player with code name " + playerRequest.getCodeName());
         if (this.playerRepository.findByCodeName(playerRequest.getCodeName()).isEmpty()) {
             Player player = Player.builder()
@@ -23,9 +23,18 @@ public class PlayerService {
                     .lastName("")
                     .codeName(playerRequest.getCodeName())
                     .build();
-            playerRepository.save(player);
+            return playerRepository.save(player);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
         }
+    }
+
+    public Player getPlayerByCodeName(String codeName) {
+        log.info("Finding player with code name " + codeName);
+        var player = this.playerRepository.findByCodeName(codeName);
+        if(player.isPresent())
+            return player.get();
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with code name " + codeName);
     }
 }

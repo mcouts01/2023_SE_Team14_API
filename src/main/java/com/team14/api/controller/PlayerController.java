@@ -1,5 +1,6 @@
 package com.team14.api.controller;
 import com.team14.api.dto.PlayerDTO;
+import com.team14.api.entity.Player;
 import com.team14.api.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.transform.OutputKeys;
 import java.util.Arrays;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("/player")
@@ -19,14 +22,26 @@ public class PlayerController {
 
     @ResponseBody
     @PostMapping("/")
-    public ResponseEntity<String> savePlayer(@RequestBody PlayerDTO player) {
+    public ResponseEntity<Player> savePlayer(@RequestBody PlayerDTO playerRequest) {
         try {
-            playerService.savePlayer(player);
-            return new ResponseEntity<>("Sucessfully added player", HttpStatus.OK);
+            var player = playerService.savePlayer(playerRequest);
+            return ResponseEntity.ok(player);
         } catch (Exception e) {
             log.error(e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>("Could not add player", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{codeName}")
+    public ResponseEntity<Player> findPlayerByCodeName(@PathVariable String codeName) {
+        try {
+            var player = playerService.getPlayerByCodeName(codeName);
+            return new ResponseEntity<>(player, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
