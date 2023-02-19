@@ -7,6 +7,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlayerDTO {
-    private Integer playerID;
     private String codeName;
 }
