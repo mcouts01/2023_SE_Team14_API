@@ -34,10 +34,22 @@ public class PlayerController {
     }
 
     @ResponseBody
-    @GetMapping("/{codeName}")
+    @GetMapping("/codeName={codeName}")
     public ResponseEntity<Player> findPlayerByCodeName(@PathVariable String codeName) {
         try {
             var player = playerService.getPlayerByCodeName(codeName);
+            return new ResponseEntity<>(player, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/id={id}")
+    public ResponseEntity<Player> findPlayerByID(@PathVariable Integer id) {
+        try {
+            var player = playerService.getPlayerByID(id);
             return new ResponseEntity<>(player, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());

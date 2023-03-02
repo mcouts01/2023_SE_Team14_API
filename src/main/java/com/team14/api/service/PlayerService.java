@@ -18,14 +18,19 @@ public class PlayerService {
     public Player savePlayer(PlayerDTO playerRequest) {
         log.info("Saving player with code name " + playerRequest.getCodeName());
         if (this.playerRepository.findByCodeName(playerRequest.getCodeName()).isEmpty()) {
-            Player player = Player.builder()
-                    .firstName("") // Professor mentioned that we don't need to worry about first and last name
-                    .lastName("")
-                    .codeName(playerRequest.getCodeName())
-                    .build();
-            return playerRepository.save(player);
+            if(this.playerRepository.findByID(playerRequest.getId()).isEmpty()) {
+                Player player = Player.builder()
+                        .firstName("") // Professor mentioned that we don't need to worry about first and last name
+                        .lastName("")
+                        .id(playerRequest.getId())
+                        .codeName(playerRequest.getCodeName())
+                        .build();
+                return playerRepository.save(player);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists with id " + playerRequest.getId());
+            }
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists with code name " + playerRequest.getCodeName());
         }
     }
 
@@ -36,5 +41,14 @@ public class PlayerService {
             return player.get();
         else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with code name " + codeName);
+    }
+
+    public Player getPlayerByID(Integer id) {
+        log.info("Finding player with id " + id);
+        var player = this.playerRepository.findByID(id);
+        if(player.isPresent())
+            return player.get();
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + id);
     }
 }

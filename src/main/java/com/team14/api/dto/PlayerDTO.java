@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlayerDTO {
     private String codeName;
+    private Integer id;
 }
