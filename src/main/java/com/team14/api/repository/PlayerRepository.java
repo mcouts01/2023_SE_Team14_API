@@ -13,4 +13,6 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
     @Query("SELECT * FROM public.player WHERE code_name = :codeName")
     Optional<Player> findByCodeName(@Param("codeName") String codeName);
 
+    @Query("SELECT * FROM public.player WHERE id = :id")
+    Optional<Player> findByID(@Param("id") Integer id);
 }
