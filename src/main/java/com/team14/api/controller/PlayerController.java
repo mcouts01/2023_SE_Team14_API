@@ -2,6 +2,7 @@ package com.team14.api.controller;
 import com.team14.api.dto.PlayerDTO;
 import com.team14.api.entity.Player;
 import com.team14.api.service.PlayerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class PlayerController {
 
     @ResponseBody
     @PostMapping("/")
-    public ResponseEntity<Player> savePlayer(@RequestBody PlayerDTO playerRequest) {
+    public ResponseEntity<Player> savePlayer(@Valid @RequestBody PlayerDTO playerRequest) {
         try {
             var player = playerService.savePlayer(playerRequest);
             return ResponseEntity.ok(player);
