@@ -1,38 +1,37 @@
 package com.team14.api.service;
 
 import com.team14.api.dto.ScoreDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class SsePublisher {
 
-    private final List<SseEmitter> emitters = new ArrayList<>();
+    private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public synchronized void addEmitter(SseEmitter emitter) {
-        this.emitters.add(emitter);
-        emitter.onCompletion(() -> this.emitters.remove(emitter));
-        emitter.onTimeout(() -> this.emitters.remove(emitter));
-    }
-
-    public synchronized void removeEmitter(SseEmitter emitter) {
-        this.emitters.remove(emitter);
+    public synchronized void addEmitter(String id, SseEmitter emitter) {
+        this.emitters.put(id, emitter);
+        emitter.onCompletion(() -> this.emitters.remove(id));
+        emitter.onTimeout(() -> this.emitters.remove(id));
     }
 
     public synchronized void send(ScoreDTO score) {
-        List<SseEmitter> deadEmitters = new ArrayList<>();
-        this.emitters.forEach(emitter -> {
+        this.emitters.forEach((id, emitter) -> {
             try {
                 emitter.send(score);
-            } catch (Exception e) {
-                deadEmitters.add(emitter);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                emitter.complete();
+                emitters.remove(id);
             }
         });
-
-        this.emitters.removeIf(deadEmitters::contains);
     }
 }

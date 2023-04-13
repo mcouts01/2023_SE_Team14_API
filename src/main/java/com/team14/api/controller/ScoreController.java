@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.UUID;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @Slf4j
 @RestController
@@ -21,7 +23,7 @@ public class ScoreController {
     @GetMapping("/")
     public SseEmitter getScores() {
         SseEmitter emitter = new SseEmitter();
-        ssePublisher.addEmitter(emitter);
+        ssePublisher.addEmitter(UUID.randomUUID().toString(), emitter);
         return emitter;
     }
 }
